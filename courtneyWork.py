@@ -2,6 +2,7 @@
 File with Courtney's code
 """
 
+from mainCode import *
 from tkinter import *
 from tkinter import messagebox
 from random import *
@@ -14,13 +15,14 @@ def main():
 
 class RockPaperScissors:
     team_size = 2
-    bg_color = "#b1b6bd"
+    canvas_bg_color = "#a3afbf"  # bluish grey color
+    interface_bg_color = "#b1b6bd"  # greyish color
 
     def __init__(self):
         self.root = Tk()
-        self.root['title'] = "Rock Paper Scissors"
-        scrsize = str(self.root.winfo_screenwidth() - 50) + "x" + str(self.root.winfo_screenheight() - 50)
-        self.root.geometry(scrsize + "+0+5")
+        self.root.title = "Rock Paper Scissors"
+        screensize = str(self.root.winfo_screenwidth() - 50) + "x" + str(self.root.winfo_screenheight() - 50)
+        self.root.geometry(screensize + "+0+5")
         self.canvas_frame, self.interface_frame = self.create_frames()
         # set up ‘scissors’ image as label
         # set up ‘rock’ image as label
@@ -31,11 +33,11 @@ class RockPaperScissors:
 
     def create_frames(self):
         """ Creates canvas and interface frames."""
-        canvas_frame = Canvas(self.root, bg=RockPaperScissors.bg_color)
-        canvas_frame.grid(row=1, column=0)
+        interface_frame = Frame(self.root, bg=RockPaperScissors.interface_bg_color)
+        interface_frame.pack(fill="both", expand=True)
 
-        interface_frame = Frame(self.root)
-        interface_frame.grid(row=0, column=0, sticky=N+E+W+S)
+        canvas_frame = Canvas(self.root, bg=RockPaperScissors.canvas_bg_color)
+        canvas_frame.pack(fill="both", expand=True)
         return canvas_frame, interface_frame
 
     # button functions
@@ -57,4 +59,3 @@ class RockPaperScissors:
 
 if __name__ == "__main__":
     main()
-    print("testing")
