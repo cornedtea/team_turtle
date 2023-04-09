@@ -16,25 +16,37 @@ def main():
 class Rock:
     def __init__(self):
         self.name = "Rock"
+        self.image = PhotoImage(file="Images/rock.jpg")
 
     def getType(self):
         return self.name
+
+    def getImage(self):
+        return self.image
 
 
 class Paper:
     def __init__(self):
         self.name = "Paper"
+        self.image = PhotoImage(file="Images/paper.jpg")
 
     def getType(self):
         return self.name
+
+    def getImage(self):
+        return self.image
 
 
 class Scissors:
     def __init__(self):
         self.name = "Scissors"
+        self.image = PhotoImage(file="Images/scissors.png")
 
     def getType(self):
         return self.name
+
+    def getImage(self):
+        return self.image
 
 
 class RockPaperScissors:
@@ -59,8 +71,7 @@ class RockPaperScissors:
 
     def create_frames(self):
         """ Creates canvas and interface frames."""
-        interface_frame = Frame(self.root, height=50, bg=RockPaperScissors.interface_bg_color,
-                                bd=2, relief='solid')
+        interface_frame = Frame(self.root, height=50, bg=RockPaperScissors.interface_bg_color)
         interface_frame.pack(fill="x")
 
         canvas_frame = Canvas(self.root, bg=RockPaperScissors.canvas_bg_color, bd=0)
