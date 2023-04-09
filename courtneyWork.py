@@ -6,6 +6,7 @@ from mainCode import *
 from tkinter import *
 from tkinter import messagebox
 from random import *
+from time import *
 
 
 def main():
@@ -13,40 +14,63 @@ def main():
     program.root.mainloop()
 
 
+def create_teams():
+    """ Creates teams of objects of classes Rock, Paper, and Scissors.
+    The team lists keep track of the objects themselves."""
+    teamRock = []
+    teamPaper = []
+    teamScissors = []
+    for i in range(RockPaperScissors.team_size):
+        newRock = Rock()
+        teamRock.append(newRock)
+        newPaper = Paper()
+        teamPaper.append(newPaper)
+        newScissors = Scissors()
+        teamScissors.append(newScissors)
+    return teamRock, teamPaper, teamScissors
+
+
 class Rock:
     def __init__(self):
         self.name = "Rock"
-        self.image = PhotoImage(file="Images/rock.jpg")
+        self.image = PhotoImage(file="Images/rock.png")
+        self.image = self.image.subsample(15)
+        self.x_movement = 5
+        self.y_movement = 5
+        self.width = self.image.width()
+        self.height = self.image.height()
 
     def getType(self):
         return self.name
-
-    def getImage(self):
-        return self.image
 
 
 class Paper:
     def __init__(self):
         self.name = "Paper"
-        self.image = PhotoImage(file="Images/paper.jpg")
+        self.image = PhotoImage(file="Images/paper.png")
+        self.image = self.image.zoom(9)
+        self.image = self.image.subsample(5 * 15)
+        self.x_movement = 5
+        self.y_movement = 5
+        self.width = self.image.width()
+        self.height = self.image.height()
 
     def getType(self):
         return self.name
-
-    def getImage(self):
-        return self.image
 
 
 class Scissors:
     def __init__(self):
         self.name = "Scissors"
         self.image = PhotoImage(file="Images/scissors.png")
+        self.image = self.image.subsample(15)
+        self.x_movement = 5
+        self.y_movement = 5
+        self.width = self.image.width()
+        self.height = self.image.height()
 
     def getType(self):
         return self.name
-
-    def getImage(self):
-        return self.image
 
 
 class RockPaperScissors:
@@ -57,17 +81,22 @@ class RockPaperScissors:
     def __init__(self):
         self.root = Tk()
         self.root.title = "Rock Paper Scissors"
-        screensize = str(self.root.winfo_screenwidth() - 50) + "x" + str(self.root.winfo_screenheight() - 50)
+        self.window_width = self.root.winfo_screenwidth() - 50
+        self.window_height = self.root.winfo_screenheight() - 100
+        screensize = str(self.window_width) + "x" + str(self.window_height)
         self.root.geometry(screensize + "+0+5")
+        self.root.resizable(FALSE, FALSE)
         self.canvas_frame, self.interface_frame = self.create_frames()
-        self.teamRock = create_team("Rock")
-        self.teamPaper = create_team("Paper")
-        self.teamScissors = create_team("Scissors")
+        self.teamRock, self.teamPaper, self.teamScissors = create_teams()
+        self.rockObjs = []
+        self.paperObjs = []
+        self.scissorsObjs = []
+        self.objs = {}
         self.setup_button, self.start_button, self.quit_button = self.create_buttons()
         self.is_running = False
         self.set_callbacks()
         self.winner = None
-        self.userguess = None
+        self.userguess = StringVar()
 
     def create_frames(self):
         """ Creates canvas and interface frames."""
@@ -96,20 +125,68 @@ class RockPaperScissors:
         self.start_button['command'] = self.start
         self.quit_button['command'] = self.quit
 
-    def guess(self):  # TODO
+    def guess(self):  # TODO: FIND OUT WHY IT WON'T UPDATE SELF.USERGUESS
         """ Provides window for user to guess which team will win."""
-        guess = self.teamRock
-        return guess
+        popup = Tk()
+        radiorock = Radiobutton(popup, text="Rock", variable=self.userguess,
+                                value="Rock", command=self.displayguess)
+        radiorock.grid(row=0, column=0, sticky=W)
+        radiopaper = Radiobutton(popup, text="Paper", variable=self.userguess,
+                                 value="Paper", command=self.displayguess)
+        radiopaper.grid(row=0, column=1, sticky=W)
+        radioscissors = Radiobutton(popup, text="Scissors", variable=self.userguess,
+                                    value="Scissors", command=self.displayguess)
+        radioscissors.grid(row=0, column=2, sticky=W)
+        spacer = Label(popup)
+        spacer.grid(row=1, column=0)
+        submit_button = Button(popup, text="Submit")
+        submit_button.grid(row=1, column=1)
+        submit_button['command'] = popup.destroy
+        spacer = Label(popup)
+        spacer.grid(row=1, column=2)
 
-    def setup(self):  # TODO
+    def displayguess(self):
+        """ Using this to test guess()"""
+        print(self.userguess.get())
+        
+    def populate(self):
+        """ Places objects from teams onto canvas. The object lists keeps track of
+        the canvas representations of the objects."""
+        rockObjs = []
+        paperObjs = []
+        scissorsObjs = []
+        for obj in self.teamRock:
+            startx = randrange(self.window_width)
+            starty = randrange(50, self.window_height - 50)
+            rock = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            rockObjs.append(rock)
+        for obj in self.teamPaper:
+            startx = randrange(self.window_width)
+            starty = randrange(50, self.window_height - 50)
+            paper = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            paperObjs.append(paper)
+        for obj in self.teamScissors:
+            startx = randrange(self.window_width)
+            starty = randrange(50, self.window_height - 50)
+            scissors = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            scissorsObjs.append(scissors)
+        return rockObjs, paperObjs, scissorsObjs
+
+    def setup(self):
         """ Sets up simulation."""
         self.winner = None
-        self.userguess = self.guess()
+        self.rockObjs, self.paperObjs, self.scissorsObjs = self.populate()
+        for i in range(RockPaperScissors.team_size):
+            self.objs[self.teamRock[i]] = self.rockObjs[i]
+            self.objs[self.teamPaper[i]] = self.paperObjs[i]
+            self.objs[self.teamScissors[i]] = self.scissorsObjs[i]
+        self.guess()
 
-    def start(self):  # TODO
-        if self.start_button['text'] == "Start":
+    def start(self):
+        if not self.is_running:
             self.is_running = True
             self.start_button['text'] = "Stop"
+            self.canvas_frame.after(100, self.animate())
         else:
             self.is_running = False
             self.start_button['text'] = "Start"
@@ -119,43 +196,111 @@ class RockPaperScissors:
         if really_quit:
             self.root.destroy()
 
-    # animation function
+    def animate(self):
+        while self.is_running:
+            for team in [zip(self.teamRock, self.rockObjs), zip(self.teamPaper, self.paperObjs),
+                         zip(self.teamScissors, self.scissorsObjs)]:
+                for obj, canvobj in team:
+                    self.canvas_frame.move(canvobj, obj.x_movement, obj.y_movement)
+                    self.root.update()
+                    obj_pos = self.canvas_frame.coords(canvobj)
+                    xc, yc = obj_pos
+                    if xc < abs(obj.width) / 2 or xc > self.window_width - abs(obj.height) / 2:
+                        obj.x_movement = -obj.x_movement
+                    if yc < abs(obj.width) / 2 or yc > (self.window_height - 50) - abs(obj.height) / 2:
+                        obj.y_movement = -obj.y_movement
+                    collided, collidees = self.detectCollision(canvobj)
+                    if collided:
+                        obj.x_movement = -obj.x_movement
+                        obj.y_movement = -obj.y_movement
+                        for collidee in collidees:
+                            self.collision(obj, collidee)
+            sleep(0.01)
 
-    def collision(self, obj1, obj2):  # TODO
+    def detectCollision(self, canvobj):
+        zone = self.canvas_frame.bbox(canvobj)
+        nearcanvobjs = self.canvas_frame.find_overlapping(zone[0], zone[1], zone[2], zone[3])
+        nearcanvobjs = list(nearcanvobjs)
+        nearcanvobjs.remove(canvobj)
+        if len(nearcanvobjs) != 0:
+            collided = True
+        else:
+            collided = False
+        return collided, nearcanvobjs
+
+    def collision(self, obj1, canvobj2):
         """ Determines team transfer on collision."""
-        if obj1.getType() == "Paper" and obj2.getType == "Rock":
-            pass
-        if RockPaperScissors.team_size == RockPaperScissors.team_size * 3:
+        val_list = list(self.objs.values())
+        key_list = list(self.objs.keys())
+        position = val_list.index(canvobj2)
+        obj2 = key_list[position]
+        if obj1.getType() == "Rock" and obj2.getType() == "Paper":
+            winner = obj2
+            obj1.__class__ = Paper
+            self.teamRock.remove(obj1)
+            self.rockObjs.remove(self.objs[obj1])
+            self.teamPaper.append(obj1)
+            self.paperObjs.append(self.objs[obj1])
+        elif obj1.getType() == "Rock" and obj2.getType() == "Scissors":
+            winner = obj1
+            obj2.__class__ = Rock
+            self.teamScissors.remove(obj2)
+            self.scissorsObjs.remove(self.objs[obj2])
+            self.teamRock.append(obj2)
+            self.rockObjs.append(self.objs[obj2])
+        elif obj1.getType() == "Paper" and obj2.getType() == "Rock":
+            winner = obj1
+            obj2.__class__ = Paper
+            self.teamRock.remove(obj2)
+            self.rockObjs.remove(self.objs[obj2])
+            self.teamPaper.append(obj2)
+            self.paperObjs.append(self.objs[obj2])
+        elif obj1.getType() == "Paper" and obj2.getType() == "Scissors":
+            winner = obj2
+            obj1.__class__ = Scissors
+            self.teamPaper.remove(obj1)
+            self.paperObjs.remove(self.objs[obj1])
+            self.teamScissors.append(obj1)
+            self.scissorsObjs.append(self.objs[obj1])
+        elif obj1.getType() == "Scissors" and obj2.getType() == "Rock":
+            winner = obj2
+            obj1.__class__ = Rock
+            self.teamScissors.remove(obj1)
+            self.scissorsObjs.remove(self.objs[obj1])
+            self.teamRock.append(obj1)
+            self.rockObjs.append(self.objs[obj1])
+        elif obj1.getType() == "Scissors" and obj2.getType() == "Paper":
+            winner = obj1
+            obj2.__class__ = Scissors
+            self.teamPaper.remove(obj2)
+            self.paperObjs.remove(self.objs[obj2])
+            self.teamScissors.append(obj2)
+            self.scissorsObjs.append(self.objs[obj2])
+        else:
+            winner = None
+        self.canvas_frame.itemconfig(self.objs[obj1], image=obj1.image)
+        self.canvas_frame.itemconfig(self.objs[obj2], image=obj2.image)
+        if winner in self.teamRock:
+            winner_team = self.teamRock
+        elif winner in self.teamPaper:
+            winner_team = self.teamPaper
+        elif winner in self.teamScissors:
+            winner_team = self.teamScissors
+        else:
+            winner_team = []
+        if len(winner_team) == RockPaperScissors.team_size * 3:
             self.is_running = False
-        pass
-
-    def determineWinner(self):  # TODO
-        teams = [self.teamRock, self.teamPaper, self.teamScissors]
-        winner = choice(teams)
-        return winner
+            self.winner = winner_team
+            self.endResult()
 
     def endResult(self):
         """ Creates message telling user if their guess was correct."""
-        self.winner = self.determineWinner()
         if self.userguess == self.winner:
             messagebox.showinfo("Result", "Congratulations! You guessed {} and {} won."
                                 .format(self.userguess, self.winner))
         else:
             messagebox.showinfo("Result", "You guessed {}, but {} won. Better luck next time!"
                                 .format(self.userguess, self.winner))
-
-
-def create_team(teamname):  # TODO
-    team = []
-    for i in range(RockPaperScissors.team_size):
-        if teamname == "Rock":
-            new = Rock()
-        elif teamname == "Paper":
-            new = Paper()
-        else:
-            new = Scissors()
-        team.append(new)
-    return team
 
 
 if __name__ == "__main__":
