@@ -1,5 +1,5 @@
 # Rock Paper Scissors
-## Team Turtle
+## Team Turtle - Courtney Brown, Alana Nadolski, & Blanche Reading
 
 Repository for COMP 123 final project work
 
