@@ -51,6 +51,12 @@ class RockPaperScissors:
             self.height = image.height()
             return image
 
+        def place(self, canvas, width, height):
+            startx = randrange(width)
+            starty = randrange(height)
+            canvas_object = canvas.create_image(startx, starty, image=self.image)
+            return canvas_object
+
     def __init__(self):
         self.root = Tk()
         self.root.title = "Rock Paper Scissors"
@@ -148,19 +154,13 @@ class RockPaperScissors:
         paperObjs = []
         scissorsObjs = []
         for obj in self.teamRock:
-            startx = randrange(self.window_width)
-            starty = randrange(50, self.window_height - 50)
-            rock = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            rock = obj.place(self.canvas_frame, self.window_width, self.window_height - 100)
             rockObjs.append(rock)
         for obj in self.teamPaper:
-            startx = randrange(self.window_width)
-            starty = randrange(50, self.window_height - 50)
-            paper = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            paper = obj.place(self.canvas_frame, self.window_width, self.window_height - 100)
             paperObjs.append(paper)
         for obj in self.teamScissors:
-            startx = randrange(self.window_width)
-            starty = randrange(50, self.window_height - 50)
-            scissors = self.canvas_frame.create_image(startx, starty, image=obj.image)
+            scissors = obj.place(self.canvas_frame, self.window_width, self.window_height - 100)
             scissorsObjs.append(scissors)
         return rockObjs, paperObjs, scissorsObjs
 
