@@ -15,7 +15,7 @@ def main():
 
 
 class RockPaperScissors:
-    team_size = 1
+    team_size = 5
     canvas_bg_color = "#a3afbf"  # bluish grey color
     interface_bg_color = "#b1b6bd"  # greyish color
 
@@ -55,21 +55,26 @@ class RockPaperScissors:
         def place(self, canvas, width, height):
             startx = randrange(self.width // 2, width - self.width // 2)
             starty = randrange(self.height // 2, height - self.height // 2)
-            canvas_object = canvas.create_image(startx, starty, image=self.image)
-            zone = canvas.bbox(canvas_object)
-            nearcanvobjs = canvas.find_overlapping(zone[0], zone[1], zone[2], zone[3])
-            nearcanvobjs = list(nearcanvobjs)
-            nearcanvobjs.remove(canvas_object)
-            if len(nearcanvobjs) != 0:
-                collided = True
-            else:
-                collided = False
+            object_ID = canvas.create_image(startx, starty, image=self.image)
+            collided = self.overlap(canvas, object_ID)
             while collided:
-                canvas.delete(canvas_object)
+                canvas.delete(object_ID)
                 startx = randrange(self.width // 2, width - self.width // 2)
                 starty = randrange(self.height // 2, height - self.height // 2)
-                canvas_object = canvas.create_image(startx, starty, image=self.image)
-            return canvas_object
+                object_ID = canvas.create_image(startx, starty, image=self.image)
+                collided = self.overlap(canvas, object_ID)
+            return object_ID
+        
+        def overlap(self, canvas, object_ID):
+            zone = canvas.bbox(object_ID)
+            nearobject_IDs = canvas.find_overlapping(zone[0], zone[1], zone[2], zone[3])
+            nearobject_IDs = list(nearobject_IDs)
+            nearobject_IDs.remove(object_ID)
+            if len(nearobject_IDs) != 0:
+                overlap = True
+            else:
+                overlap = False
+            return overlap
 
     def __init__(self):
         self.root = Tk()
@@ -107,7 +112,7 @@ class RockPaperScissors:
         spacer.pack(side=LEFT, fill=Y, expand=True)
         setup_button = Button(self.interface_frame, text="Set up")
         setup_button.pack(side=LEFT, padx=20, pady=10)
-        start_button = Button(self.interface_frame, text="Start")
+        start_button = Button(self.interface_frame, text="---")
         start_button.pack(side=LEFT, padx=20, pady=10)
         guess_label = Label(self.interface_frame, text="Your guess: ")
         guess_label.pack(side=LEFT, padx=20, pady=10)
@@ -190,6 +195,7 @@ class RockPaperScissors:
             self.objs[self.teamPaper[i]] = self.paperObjs[i]
             self.objs[self.teamScissors[i]] = self.scissorsObjs[i]
         self.guess()
+        self.start_button['text'] = "Start"
 
     def start(self):
         if not self.is_running:
@@ -209,16 +215,16 @@ class RockPaperScissors:
         while self.is_running:
             for team in [zip(self.teamRock, self.rockObjs), zip(self.teamPaper, self.paperObjs),
                          zip(self.teamScissors, self.scissorsObjs)]:
-                for obj, canvobj in team:
-                    self.canvas_frame.move(canvobj, obj.x_movement, obj.y_movement)
+                for obj, object_ID in team:
+                    self.canvas_frame.move(object_ID, obj.x_movement, obj.y_movement)
                     self.root.update()
-                    obj_pos = self.canvas_frame.coords(canvobj)
+                    obj_pos = self.canvas_frame.coords(object_ID)
                     xc, yc = obj_pos
                     if xc < abs(obj.width) / 2 or xc > self.window_width - abs(obj.height) / 2:
                         obj.x_movement = -obj.x_movement
                     if yc < abs(obj.width) / 2 or yc > (self.window_height - 50) - abs(obj.height) / 2:
                         obj.y_movement = -obj.y_movement
-                    collided, collidees = self.detectCollision(canvobj)
+                    collided, collidees = self.detectCollision(object_ID)
                     if collided:
                         obj.x_movement = -obj.x_movement
                         obj.y_movement = -obj.y_movement
@@ -226,22 +232,22 @@ class RockPaperScissors:
                             self.collision(obj, collidee)
             sleep(0.01)
 
-    def detectCollision(self, canvobj):
-        zone = self.canvas_frame.bbox(canvobj)
-        nearcanvobjs = self.canvas_frame.find_overlapping(zone[0], zone[1], zone[2], zone[3])
-        nearcanvobjs = list(nearcanvobjs)
-        nearcanvobjs.remove(canvobj)
-        if len(nearcanvobjs) != 0:
+    def detectCollision(self, object_ID):
+        zone = self.canvas_frame.bbox(object_ID)
+        nearobject_IDs = self.canvas_frame.find_overlapping(zone[0], zone[1], zone[2], zone[3])
+        nearobject_IDs = list(nearobject_IDs)
+        nearobject_IDs.remove(object_ID)
+        if len(nearobject_IDs) != 0:
             collided = True
         else:
             collided = False
-        return collided, nearcanvobjs
+        return collided, nearobject_IDs
 
-    def collision(self, obj1, canvobj2):
+    def collision(self, obj1, object_ID2):
         """ Determines team transfer on collision."""
         val_list = list(self.objs.values())
         key_list = list(self.objs.keys())
-        position = val_list.index(canvobj2)
+        position = val_list.index(object_ID2)
         obj2 = key_list[position]
         if obj1.getType() == "Rock" and obj2.getType() == "Paper":
             winner = obj2
@@ -289,7 +295,6 @@ class RockPaperScissors:
             winner = None
         self.canvas_frame.itemconfig(self.objs[obj1], image=obj1.image)
         self.canvas_frame.itemconfig(self.objs[obj2], image=obj2.image)
-        print("Obj1 Type:", obj1.getType(), "object2 type", obj2.getType())
         self.root.update()
         if winner in self.teamRock:
             winner_team = self.teamRock
