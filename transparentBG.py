@@ -2,6 +2,7 @@
 In this project, this file takes the rock image and returns a transparent background version."""
 
 from PIL import Image
+import math
 
 
 def transparent(filename: str):
@@ -11,7 +12,9 @@ def transparent(filename: str):
     new_img = img.copy()
     new_data = []
     for pixel in img_data:
-        if pixel[0] == pixel[1] and pixel[1] == pixel[2] and pixel[0] != 0:
+        dist1 = math.sqrt((pixel[0] - pixel[1]) ** 2)
+        dist2 = math.sqrt((pixel[1] - pixel[2]) ** 2)
+        if dist1 < 10 and dist2 < 10 and pixel[0] != 0:
             new_color = (0, 0, 0, 0)
             new_data.append(new_color)
         else:
@@ -23,6 +26,4 @@ def transparent(filename: str):
 if __name__ == "__main__":
     rock_transparent = transparent("Images/rock.png")
     rock_transparent.show()
-    # rock_transparent.save("Images/rock_transparent.png")
-
-    # If rock_transparent is not 360x360, make a note using TODO
+    rock_transparent.save("Images/rock.png")
