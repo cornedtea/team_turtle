@@ -34,6 +34,7 @@ class RockPaperScissors:
 
         def setType(self, team: str):
             self.name = team
+            self.image = self.setImage()
 
         def setImage(self):
             """ Sets the image of the object based on the team name."""
@@ -52,9 +53,22 @@ class RockPaperScissors:
             return image
 
         def place(self, canvas, width, height):
-            startx = randrange(width)
-            starty = randrange(height)
+            startx = randrange(self.width // 2, width - self.width // 2)
+            starty = randrange(self.height // 2, height - self.height // 2)
             canvas_object = canvas.create_image(startx, starty, image=self.image)
+            zone = canvas.bbox(canvas_object)
+            nearcanvobjs = canvas.find_overlapping(zone[0], zone[1], zone[2], zone[3])
+            nearcanvobjs = list(nearcanvobjs)
+            nearcanvobjs.remove(canvas_object)
+            if len(nearcanvobjs) != 0:
+                collided = True
+            else:
+                collided = False
+            while collided:
+                canvas.delete(canvas_object)
+                startx = randrange(self.width // 2, width - self.width // 2)
+                starty = randrange(self.height // 2, height - self.height // 2)
+                canvas_object = canvas.create_image(startx, starty, image=self.image)
             return canvas_object
 
     def __init__(self):
@@ -64,7 +78,7 @@ class RockPaperScissors:
         self.window_height = self.root.winfo_screenheight() - 100
         screensize = str(self.window_width) + "x" + str(self.window_height)
         self.root.geometry(screensize + "+0+5")
-        self.root.resizable(FALSE, FALSE)
+        # self.root.resizable(FALSE, FALSE)
         self.canvas_frame, self.interface_frame = self.create_frames()
         self.teamRock = []
         self.teamPaper = []
@@ -275,6 +289,8 @@ class RockPaperScissors:
             winner = None
         self.canvas_frame.itemconfig(self.objs[obj1], image=obj1.image)
         self.canvas_frame.itemconfig(self.objs[obj2], image=obj2.image)
+        print("Obj1 Type:", obj1.getType(), "object2 type", obj2.getType())
+        self.root.update()
         if winner in self.teamRock:
             winner_team = self.teamRock
         elif winner in self.teamPaper:
