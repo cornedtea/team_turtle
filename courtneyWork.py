@@ -14,65 +14,6 @@ def main():
     program.root.mainloop()
 
 
-def create_teams():
-    """ Creates teams of objects of classes Rock, Paper, and Scissors.
-    The team lists keep track of the objects themselves."""
-    teamRock = []
-    teamPaper = []
-    teamScissors = []
-    for i in range(RockPaperScissors.team_size):
-        newRock = Rock()
-        teamRock.append(newRock)
-        newPaper = Paper()
-        teamPaper.append(newPaper)
-        newScissors = Scissors()
-        teamScissors.append(newScissors)
-    return teamRock, teamPaper, teamScissors
-
-
-class Rock:
-    def __init__(self):
-        self.name = "Rock"
-        self.image = PhotoImage(file="Images/rock.png")
-        self.image = self.image.zoom(2)
-        self.image = self.image.subsample(9)
-        self.x_movement = 5
-        self.y_movement = 5
-        self.width = self.image.width()
-        self.height = self.image.height()
-
-    def getType(self):
-        return self.name
-
-
-class Paper:
-    def __init__(self):
-        self.name = "Paper"
-        self.image = PhotoImage(file="Images/paper.png")
-        self.x_movement = 5
-        self.y_movement = 5
-        self.width = self.image.width()
-        self.height = self.image.height()
-
-    def getType(self):
-        return self.name
-
-
-class Scissors:
-    def __init__(self):
-        self.name = "Scissors"
-        self.image = PhotoImage(file="Images/scissors.png")
-        self.image = self.image.zoom(2)
-        self.image = self.image.subsample(9)
-        self.x_movement = 5
-        self.y_movement = 5
-        self.width = self.image.width()
-        self.height = self.image.height()
-
-    def getType(self):
-        return self.name
-
-
 class RockPaperScissors:
     team_size = 1
     canvas_bg_color = "#a3afbf"  # bluish grey color
@@ -81,7 +22,34 @@ class RockPaperScissors:
     class Movable:
         def __init__(self, team: str):
             self.name = team
-            self.x_movement
+            self.x_movement = 5
+            self.y_movement = 5
+            self.width = 0
+            self.height = 0
+            self.image = self.setImage()
+
+        def getType(self):
+            """ Returns the type of the Movable object as a string."""
+            return self.name
+
+        def setType(self, team: str):
+            self.name = team
+
+        def setImage(self):
+            """ Sets the image of the object based on the team name."""
+            if self.name == "Rock":
+                image = PhotoImage(file="Images/rock.png")
+                image = image.zoom(2)
+                image = image.subsample(9)
+            elif self.name == "Paper":
+                image = PhotoImage(file="Images/paper.png")
+            else:
+                image = PhotoImage(file="Images/scissors.png")
+                image = image.zoom(2)
+                image = image.subsample(9)
+            self.width = image.width()
+            self.height = image.height()
+            return image
 
     def __init__(self):
         self.root = Tk()
@@ -128,6 +96,20 @@ class RockPaperScissors:
         spacer = Label(self.interface_frame, text="", bg=RockPaperScissors.interface_bg_color)
         spacer.pack(side=LEFT, fill=Y, expand=True)
         return setup_button, start_button, guess_label, quit_button
+
+    def create_teams(self):
+        """ Creates teams of equal size, one each of rock, paper, and scissors."""
+        teamRock = []
+        teamPaper = []
+        teamScissors = []
+        for i in range(RockPaperScissors.team_size):
+            newRock = self.Movable("Rock")
+            teamRock.append(newRock)
+            newPaper = self.Movable("Paper")
+            teamPaper.append(newPaper)
+            newScissors = self.Movable("Scissors")
+            teamScissors.append(newScissors)
+        return teamRock, teamPaper, teamScissors
 
     def set_callbacks(self):
         self.setup_button['command'] = self.setup
@@ -187,7 +169,7 @@ class RockPaperScissors:
         self.winner = None
         self.guess_label['text'] = "Your guess: "
         self.canvas_frame.delete('all')
-        self.teamRock, self.teamPaper, self.teamScissors = create_teams()
+        self.teamRock, self.teamPaper, self.teamScissors = self.create_teams()
         self.rockObjs, self.paperObjs, self.scissorsObjs = self.populate()
         for i in range(RockPaperScissors.team_size):
             self.objs[self.teamRock[i]] = self.rockObjs[i]
@@ -253,42 +235,42 @@ class RockPaperScissors:
             self.rockObjs.remove(self.objs[obj1])
             self.teamPaper.append(obj1)
             self.paperObjs.append(self.objs[obj1])
-            obj1.__class__ = Paper
+            obj1.setType("Paper")
         elif obj1.getType() == "Rock" and obj2.getType() == "Scissors":
             winner = obj1
             self.teamScissors.remove(obj2)
             self.scissorsObjs.remove(self.objs[obj2])
             self.teamRock.append(obj2)
             self.rockObjs.append(self.objs[obj2])
-            obj2.__class__ = Rock
+            obj2.setType("Rock")
         elif obj1.getType() == "Paper" and obj2.getType() == "Rock":
             winner = obj1
             self.teamRock.remove(obj2)
             self.rockObjs.remove(self.objs[obj2])
             self.teamPaper.append(obj2)
             self.paperObjs.append(self.objs[obj2])
-            obj2.__class__ = Paper
+            obj2.setType("Paper")
         elif obj1.getType() == "Paper" and obj2.getType() == "Scissors":
             winner = obj2
             self.teamPaper.remove(obj1)
             self.paperObjs.remove(self.objs[obj1])
             self.teamScissors.append(obj1)
             self.scissorsObjs.append(self.objs[obj1])
-            obj1.__class__ = Scissors
+            obj1.setType("Scissors")
         elif obj1.getType() == "Scissors" and obj2.getType() == "Rock":
             winner = obj2
             self.teamScissors.remove(obj1)
             self.scissorsObjs.remove(self.objs[obj1])
             self.teamRock.append(obj1)
             self.rockObjs.append(self.objs[obj1])
-            obj1.__class__ = Rock
+            obj1.setType("Rock")
         elif obj1.getType() == "Scissors" and obj2.getType() == "Paper":
             winner = obj1
             self.teamPaper.remove(obj2)
             self.paperObjs.remove(self.objs[obj2])
             self.teamScissors.append(obj2)
             self.scissorsObjs.append(self.objs[obj2])
-            obj2.__class__ = Scissors
+            obj2.setType("Scissors")
         else:
             winner = None
         self.canvas_frame.itemconfig(self.objs[obj1], image=obj1.image)
@@ -313,12 +295,12 @@ class RockPaperScissors:
 
     def endResult(self):
         """ Creates message telling user if their guess was correct."""
-        if self.userguess == self.winner:
+        if self.userguess.get() == self.winner:
             messagebox.showinfo("Result", "Congratulations! You guessed {} and {} won."
-                                .format(self.userguess, self.winner))
+                                .format(self.userguess.get(), self.winner))
         else:
             messagebox.showinfo("Result", "You guessed {}, but {} won. Better luck next time!"
-                                .format(self.userguess, self.winner))
+                                .format(self.userguess.get(), self.winner))
 
 
 if __name__ == "__main__":
