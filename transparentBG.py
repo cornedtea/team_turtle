@@ -24,3 +24,5 @@ if __name__ == "__main__":
     rock_transparent = transparent("Images/rock.png")
     rock_transparent.show()
     # rock_transparent.save("Images/rock_transparent.png")
+
+    # If rock_transparent is not 360x360, make a note using TODO
