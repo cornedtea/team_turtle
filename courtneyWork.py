@@ -15,12 +15,12 @@ def main():
 
 
 class RockPaperScissors:
-    team_size = 5
+    team_size = 3
     canvas_bg_color = "#a3afbf"  # bluish grey color
     interface_bg_color = "#b1b6bd"  # greyish color
 
     class Movable:
-        def __init__(self, team: str):
+        def __init__(self, team: str = "Rock" or "Paper" or "Scissors"):
             self.name = team
             self.x_movement = 5
             self.y_movement = 5
@@ -83,7 +83,7 @@ class RockPaperScissors:
         self.window_height = self.root.winfo_screenheight() - 100
         screensize = str(self.window_width) + "x" + str(self.window_height)
         self.root.geometry(screensize + "+0+5")
-        # self.root.resizable(FALSE, FALSE)
+        self.root.resizable(FALSE, FALSE)
         self.canvas_frame, self.interface_frame = self.create_frames()
         self.teamRock = []
         self.teamPaper = []
@@ -147,12 +147,15 @@ class RockPaperScissors:
         self.userguess = StringVar(popup)
         radiorock = Radiobutton(popup, text="Rock", variable=self.userguess,
                                 value="Rock", command=self.display_guess)
+        radiorock.deselect()
         radiorock.grid(row=0, column=0, sticky=W)
         radiopaper = Radiobutton(popup, text="Paper", variable=self.userguess,
                                  value="Paper", command=self.display_guess)
+        radiopaper.deselect()
         radiopaper.grid(row=0, column=1, sticky=W)
         radioscissors = Radiobutton(popup, text="Scissors", variable=self.userguess,
                                     value="Scissors", command=self.display_guess)
+        radioscissors.deselect()
         radioscissors.grid(row=0, column=2, sticky=W)
         spacer = Label(popup)
         spacer.grid(row=1, column=0)
