@@ -1,4 +1,5 @@
-""" Courtney's Code
+""" ===================================================================
+Courtney's Code
 
 Recent Updates:
 * NEW: changes to variable names to follow underscore format
@@ -22,17 +23,21 @@ from time import *
 
 
 def main():
+    # TODO: add docstring maybe
     program = RockPaperScissors()
     program.root.mainloop()
 
 
 class RockPaperScissors:
-    team_size = 3
-    canvas_bg_color = '#a3afbf'  # bluish grey color
-    interface_bg_color = '#b1b6bd'  # grey-ish color
+    # TODO: add docstring
+    TEAM_SIZE = 3
+    CANVAS_BG_COLOR = '#a3afbf'  # bluish grey color
+    INTERFACE_BG_COLOR = '#b1b6bd'  # grey-ish color
 
     class Movable:
+        # TODO: add docstring
         def __init__(self, team: str = 'Rock' or 'Paper' or 'Scissors'):
+            # TODO: add docstring
             self.name = team
             self.x_movement = 5
             self.y_movement = 5
@@ -45,6 +50,7 @@ class RockPaperScissors:
             return self.name
 
         def setType(self, team: str):
+            # TODO: add docstring
             self.name = team
             self.image = self.setImage()
 
@@ -65,6 +71,7 @@ class RockPaperScissors:
             return image
 
         def place(self, canvas, width, height):
+            # TODO: add docstring
             start_x = randrange(self.width // 2 + 10, width - self.width // 2 - 10)
             start_y = randrange(self.height // 2 + 10, height - self.height // 2 - 10)
             object_ID = canvas.create_image(start_x, start_y, image=self.image)
@@ -78,6 +85,7 @@ class RockPaperScissors:
             return object_ID
 
         def overlap(self, canvas, object_ID):
+            # TODO: fix static warning, add docstring
             zone = canvas.bbox(object_ID)
             near_object_IDs = canvas.find_overlapping(zone[0], zone[1], zone[2], zone[3])
             near_object_IDs = list(near_object_IDs)
@@ -89,6 +97,7 @@ class RockPaperScissors:
             return overlap
 
     def __init__(self):
+        # TODO: add docstring
         self.root = Tk()
         self.root.title = 'Rock Paper Scissors'
         self.window_width = self.root.winfo_screenwidth() - 50
@@ -112,15 +121,16 @@ class RockPaperScissors:
 
     def create_frames(self):
         """ Creates canvas and interface frames."""
-        interface_frame = Frame(self.root, height=50, bg=RockPaperScissors.interface_bg_color)
+        interface_frame = Frame(self.root, height=50, bg=RockPaperScissors.INTERFACE_BG_COLOR)
         interface_frame.pack(fill='x')
 
-        canvas_frame = Canvas(self.root, bg=RockPaperScissors.canvas_bg_color, bd=0)
+        canvas_frame = Canvas(self.root, bg=RockPaperScissors.CANVAS_BG_COLOR, bd=0)
         canvas_frame.pack(fill='both', expand=True)
         return canvas_frame, interface_frame
 
     def create_widgets(self):
-        spacer = Label(self.interface_frame, text='', bg=RockPaperScissors.interface_bg_color)
+        # TODO: add docstring
+        spacer = Label(self.interface_frame, text='', bg=RockPaperScissors.INTERFACE_BG_COLOR)
         spacer.pack(side=LEFT, fill=Y, expand=True)
         setup_button = Button(self.interface_frame, text='Set up')
         setup_button.pack(side=LEFT, padx=20, pady=10)
@@ -130,7 +140,7 @@ class RockPaperScissors:
         guess_label.pack(side=LEFT, padx=20, pady=10)
         quit_button = Button(self.interface_frame, text='Quit')
         quit_button.pack(side=LEFT, padx=20, pady=10)
-        spacer = Label(self.interface_frame, text='', bg=RockPaperScissors.interface_bg_color)
+        spacer = Label(self.interface_frame, text='', bg=RockPaperScissors.INTERFACE_BG_COLOR)
         spacer.pack(side=LEFT, fill=Y, expand=True)
         return setup_button, start_button, guess_label, quit_button
 
@@ -139,7 +149,7 @@ class RockPaperScissors:
         rock_objects = []
         paper_objects = []
         scissors_objects = []
-        for i in range(RockPaperScissors.team_size):
+        for i in range(RockPaperScissors.TEAM_SIZE):
             newRock = self.Movable('Rock')
             rock_objects.append(newRock)
             newPaper = self.Movable('Paper')
@@ -149,6 +159,7 @@ class RockPaperScissors:
         return rock_objects, paper_objects, scissors_objects
 
     def set_callbacks(self):
+        # TODO: add docstring
         self.setup_button['command'] = self.setup
         self.start_button['command'] = self.start
         self.quit_button['command'] = self.quit
@@ -204,7 +215,7 @@ class RockPaperScissors:
         self.canvas_frame.delete('all')
         self.rock_objects, self.paper_objects, self.scissors_objects = self.create_teams()
         self.rock_IDs, self.paper_IDs, self.scissors_IDs = self.populate()
-        for i in range(RockPaperScissors.team_size):
+        for i in range(RockPaperScissors.TEAM_SIZE):
             self.objects[self.rock_objects[i]] = self.rock_IDs[i]
             self.objects[self.paper_objects[i]] = self.paper_IDs[i]
             self.objects[self.scissors_objects[i]] = self.scissors_IDs[i]
@@ -213,6 +224,7 @@ class RockPaperScissors:
         self.setup_button['text'] = 'Reset'
 
     def start(self):
+        # TODO: add docstring
         if not self.is_running:
             self.is_running = True
             self.start_button['text'] = 'Stop'
@@ -222,11 +234,13 @@ class RockPaperScissors:
             self.start_button['text'] = 'Start'
 
     def quit(self):
+        # TODO: add docstring
         really_quit = messagebox.askyesno('Quit', 'Are you sure you want to quit?')
         if really_quit:
             self.root.destroy()
 
     def animate(self):
+        # TODO: add docstring
         while self.is_running:
             for team in [zip(self.rock_objects, self.rock_IDs), zip(self.paper_objects, self.paper_IDs),
                          zip(self.scissors_objects, self.scissors_IDs)]:
@@ -248,6 +262,7 @@ class RockPaperScissors:
             sleep(0.01)
 
     def detectCollision(self, object_ID):
+        # TODO: add docstring
         zone = self.canvas_frame.bbox(object_ID)
         near_object_IDs = self.canvas_frame.find_overlapping(zone[0], zone[1], zone[2], zone[3])
         near_object_IDs = list(near_object_IDs)
