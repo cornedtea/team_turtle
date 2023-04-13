@@ -1,17 +1,17 @@
-"""
-Courtney's Code -- v1.0.2
+""" Courtney's Code
 
-v1.0.2 Updates:
--- NEW: changes to variable names to follow underscore format
--- 'Set up' button changes to 'Reset' when pressed
--- combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
+Recent Updates:
+* NEW: changes to variable names to follow underscore format
+* 'Set up' button changes to 'Reset' when pressed
+* combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
 
 Possible Changes:
--- more intuitive UI
--- slider for team size
--- images scale size based on team size
--- radio buttons unselected on start
--- make `overlap` not static
+* radio buttons unselected on start
+* more intuitive UI
+* make `overlap` not static
+* change import statements so that it is clear which methods belong to which library (ask Amin if advisable)
+* slider for team size
+* images scale size based on team size
 """
 
 from mainCode import *
@@ -76,7 +76,7 @@ class RockPaperScissors:
                 object_ID = canvas.create_image(start_x, start_y, image=self.image)
                 collided = self.overlap(canvas, object_ID)
             return object_ID
-        
+
         def overlap(self, canvas, object_ID):
             zone = canvas.bbox(object_ID)
             near_object_IDs = canvas.find_overlapping(zone[0], zone[1], zone[2], zone[3])
@@ -179,7 +179,7 @@ class RockPaperScissors:
     def display_guess(self):
         """ Using this to test guess()"""
         self.guess_label['text'] = 'Your guess: {}'.format(self.user_guess.get())
-        
+
     def populate(self):
         """ Places objects from teams onto canvas. The object lists keeps track of
         the canvas representations of the objects."""
