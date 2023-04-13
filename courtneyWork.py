@@ -2,12 +2,12 @@
 Courtney's Code
 
 Recent Updates:
-* NEW: changes to variable names to follow underscore format
+* NEW: radiobuttons in `guess` method are now unselected
+* changes to variable names to follow underscore format
 * 'Set up' button changes to 'Reset' when pressed
 * combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
 
 Possible Changes:
-* radio buttons unselected on start
 * more intuitive UI
 * make `overlap` not static
 * change import statements so that it is clear which methods belong to which library (ask Amin if advisable)
@@ -167,7 +167,8 @@ class RockPaperScissors:
     def guess(self):
         """ Provides window for user to guess which team will win."""
         popup = Tk()
-        self.user_guess = StringVar(popup, value=' ')
+        self.user_guess = StringVar(popup)
+        self.user_guess.set('None')
         question = Label(popup, text='Who do you think will win?')
         question.grid(row=0, column=0, columnspan=3)
         radio_rock = Radiobutton(popup, text='Rock', variable=self.user_guess,
