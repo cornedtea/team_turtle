@@ -1,5 +1,14 @@
 """
-File with Courtney's code
+Courtney's Code -- v1.0
+
+v1.0 Updates:
+-- combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
+-- add methods to Movable class to simplify computation
+
+Possible Changes:
+-- slider for team size
+-- images scale size based on team size
+-- radio buttons unselected on start
 """
 
 from mainCode import *
