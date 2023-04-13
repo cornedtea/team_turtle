@@ -1,11 +1,13 @@
 """
-Courtney's Code -- v1.0
+Courtney's Code -- v1.0.1
 
-v1.0 Updates:
+v1.0.1 Updates:
+-- NEW: "Set up" button changes to "Reset" when pressed
 -- combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
 -- add methods to Movable class to simplify computation
 
 Possible Changes:
+-- more intuitive UI
 -- slider for team size
 -- images scale size based on team size
 -- radio buttons unselected on start
@@ -208,6 +210,7 @@ class RockPaperScissors:
             self.objs[self.teamScissors[i]] = self.scissorsObjs[i]
         self.guess()
         self.start_button['text'] = "Start"
+        self.setup_button['text'] = "Reset"
 
     def start(self):
         if not self.is_running:
@@ -316,7 +319,7 @@ class RockPaperScissors:
             winner_team = self.teamScissors
         else:
             winner_team = []
-        if len(winner_team) == RockPaperScissors.team_size * 3:
+        if len(winner_team) == len(self.objs):
             self.is_running = False
             if winner_team == self.teamRock:
                 self.winner = "Rock"
@@ -327,7 +330,7 @@ class RockPaperScissors:
             self.endResult()
 
     def endResult(self):
-        """ Creates message telling user if their guess was correct."""
+        """ Creates message box telling user if their guess was correct."""
         if self.userguess.get() == self.winner:
             messagebox.showinfo("Result", "Congratulations! You guessed {} and {} won."
                                 .format(self.userguess.get(), self.winner))
