@@ -1,3 +1,4 @@
+# **ALERT: THIS REPO IS NO LONGER ACTIVE**
 # Rock Paper Scissors
 ## Team Turtle - Courtney Brown, Alana Nadolski, & Blanche Reading
 
