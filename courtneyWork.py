@@ -2,7 +2,7 @@
 Courtney's Code
 
 Recent Updates:
-* NEW: radiobuttons in `guess` method are now unselected
+* NEW: Radiobuttons in `guess` method are now unselected
 * changes to variable names to follow underscore format
 * 'Set up' button changes to 'Reset' when pressed
 * combine Rock, Paper, and Scissors into one class Movable, which is nested in RockPaperScissors
